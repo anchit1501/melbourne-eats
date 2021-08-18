@@ -48,8 +48,7 @@ public final class Utils {
         return list;
     }
 
-    public static String[] GetStringArray(ArrayList<String> arr)
-    {
+    public static String[] GetStringArray(ArrayList<String> arr) {
 
         // declaration and initialise String Array
         String str[] = new String[arr.size()];
@@ -64,27 +63,41 @@ public final class Utils {
         return str;
     }
 
-    public static boolean inputValidator(Main.Validation data){
-//        System.out.println(data.getOption());
+    public static boolean inputValidator(Main.Validation data) {
+        // System.out.println(data.getOption());
 
-        if(data.getOption()<1 || data.getOption()>data.getMaxValue()){
+        if (data.getOption() < 1 || data.getOption() > data.getMaxValue()) {
             System.out.println("Please enter a correct option");
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
 
-    public static HashMap<Integer, Restaurant> filter(Object category, Restaurant[] obj){
-        HashMap<Integer,Restaurant> filtered_list = new HashMap<>();
-        int j =0;
-        for (int i = 0; i <  obj.length; i++) {
-//            System.out.println(obj[i].getName() + " " + obj[i].getCategory());
+    public static ArrayList filterByCategory(Object category, Restaurant[] obj) {
+        ArrayList filtered_list = new ArrayList<Restaurant>();
+
+        // HashMap<Integer,Restaurant> filtered_list = new HashMap<>();
+        int j = 0;
+        for (int i = 0; i < obj.length; i++) {
+            // System.out.println(obj[i].getName() + " " + obj[i].getCategory());
             if (obj[i].getCategory().equals(category.toString())) {
-                filtered_list.put(j,obj[i]);
+                filtered_list.add(obj[i]);
                 j++;
-//                System.out.println("match----"+obj[i].getName());
+                // System.out.println("match----"+obj[i].getName());
+            }
+        }
+        return filtered_list;
+    }
+
+    public static ArrayList searchByName(Object category, Restaurant[] obj) {
+        ArrayList filtered_list = new ArrayList<Restaurant>();
+
+        int j = 0;
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i].getCategory().equals(category.toString())) {
+                filtered_list.add(obj[i]);
+                j++;
             }
         }
         return filtered_list;
