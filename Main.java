@@ -149,17 +149,7 @@ public class Main {
 
     public static void restaurant_list_by_category(Object category, Restaurant[] obj) {
 
-        HashMap<Integer,Restaurant> filtered_list = new HashMap<>();
-        int j =0;
-        for (int i = 0; i <  obj.length; i++) {
-//            System.out.println(obj[i].getName() + " " + obj[i].getCategory());
-            if (obj[i].getCategory().equals(category.toString())) {
-                filtered_list.put(j,obj[i]);
-                j++;
-//                System.out.println("match----"+obj[i].getName());
-            }
-        }
-//            System.out.println("filtered"+filtered_list.toString());
+        HashMap<Integer,Restaurant> filtered_list = Utils.filter(category, obj);
 
             String message = "------------------------------------------------\n";
             message += "> Select from restaurant list\n";
@@ -222,7 +212,6 @@ public class Main {
             else{
                 System.out.println(restaurant.getFoodItems().get(restaurant.getFoodItems().keySet().toArray()[input-1]));
             }
-
 
         }
     }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class Utils {
 
@@ -73,5 +74,19 @@ public final class Utils {
         else {
             return true;
         }
+    }
+
+    public static HashMap<Integer, Restaurant> filter(Object category, Restaurant[] obj){
+        HashMap<Integer,Restaurant> filtered_list = new HashMap<>();
+        int j =0;
+        for (int i = 0; i <  obj.length; i++) {
+//            System.out.println(obj[i].getName() + " " + obj[i].getCategory());
+            if (obj[i].getCategory().equals(category.toString())) {
+                filtered_list.put(j,obj[i]);
+                j++;
+//                System.out.println("match----"+obj[i].getName());
+            }
+        }
+        return filtered_list;
     }
 }
