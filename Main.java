@@ -1,10 +1,13 @@
 package Assignment;
 
+import jdk.jshell.execution.Util;
+
 import java.util.*;
 
 import static java.lang.Double.parseDouble;
 
 public class Main {
+    private static   Restaurant[] obj;
     public CartItem[] cartObject;
 
     public Main(CartItem[] cartObject) {
@@ -28,9 +31,9 @@ public class Main {
         System.out.println("Reading Discounts.txt");
         ArrayList file2BufferString = Utils.readFile("Discounts.txt");
 
-        Restaurant[] obj = new Restaurant[file1BufferString.size()];
+      obj = new Restaurant[file1BufferString.size()];
 
-        String[] str = Utils.GetStringArray(file1BufferString);
+        String[] str = Utils.getStringArray(file1BufferString);
 
         for (int i = 0; i < file1BufferString.size(); i++) {
             if (str[i].split(",").length <= 3)
@@ -97,7 +100,7 @@ public class Main {
                 break;
             case 2:
                 System.out.println("Selected Option 2");
-                // search_restaurant_by_name(obj);
+                search_restaurant_by_name(obj);
                 break;
             case 3:
                 System.out.println("Selected Option 3");
@@ -179,15 +182,57 @@ public class Main {
         }
     }
 
-    // public static void search_restaurant_by_name(Restaurant[] obj,) {
-    // String message = "------------------------------------------------\n";
-    // message += "> Enter a restaurant name\n";
-    // message += "------------------------------------------------\n";
-    // int temp = 1;
-    //
-    // message += temp + ") Return to Main Menu";
-    //
-    // }
+    public static void search_restaurant_by_name(Restaurant[] obj) {
+        ArrayList<Restaurant> filtered_list = new ArrayList<>();
+
+        String message = "------------------------------------------------\n";
+        message += "> Enter a restaurant name\n";
+        message += "------------------------------------------------\n";
+
+        message += "1) Return to Main Menu";
+        System.out.println(message);
+
+        Scanner sc = new Scanner(System.in); // System.in is a standard input stream
+        String searchString = sc.nextLine();
+
+        System.out.println("You searched: " + searchString);
+
+        if (searchString == "1")
+            System.out.println("Back to main menu");
+        else {
+            filtered_list = Utils.searchByName(searchString, obj);
+            if (filtered_list.size() > 0)
+                restaurant_list_by_name(filtered_list);
+        }
+    }
+
+    public static void restaurant_list_by_name(ArrayList<Restaurant> list) {
+        String message = "------------------------------------------------\n";
+        message += "> Select from restaurant list\n";
+        message += "------------------------------------------------\n";
+        System.out.println(message);
+
+        for (int i = 0; i < list.size(); i++) {
+            Restaurant restaurant = list.get(i);
+            System.out.println(i + 1 + ") " + restaurant.getName());
+        }
+
+        System.out.println(list.size() + 1 + ") Return to Main Menu");
+
+        boolean validation = false;
+        int input = 0;
+        while (!validation) {
+            input = new Scanner(System.in).nextInt();
+            validation = Utils.inputValidator(new Validation(list.size() + 1, input));
+        }
+
+        if (input > 0 && input <= list.size()) {
+            restaurant_menu(list.get(input - 1), obj);
+        } else {
+            first_loading_screen(obj);
+        }
+
+    }
 
     public static void restaurant_menu(Restaurant restaurant, Restaurant[] obj) {
         String message = "------------------------------------------------\n";

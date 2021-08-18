@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Utils {
 
@@ -48,7 +50,7 @@ public final class Utils {
         return list;
     }
 
-    public static String[] GetStringArray(ArrayList<String> arr) {
+    public static String[] getStringArray(ArrayList<String> arr) {
 
         // declaration and initialise String Array
         String str[] = new String[arr.size()];
@@ -77,27 +79,24 @@ public final class Utils {
     public static ArrayList filterByCategory(Object category, Restaurant[] obj) {
         ArrayList filtered_list = new ArrayList<Restaurant>();
 
-        // HashMap<Integer,Restaurant> filtered_list = new HashMap<>();
-        int j = 0;
         for (int i = 0; i < obj.length; i++) {
             // System.out.println(obj[i].getName() + " " + obj[i].getCategory());
             if (obj[i].getCategory().equals(category.toString())) {
-                filtered_list.add(obj[i]);
-                j++;
-                // System.out.println("match----"+obj[i].getName());
-            }
+                filtered_list.add(obj[i]);            }
         }
         return filtered_list;
     }
 
-    public static ArrayList searchByName(Object category, Restaurant[] obj) {
+    public static ArrayList searchByName(String searchString, Restaurant[] obj) {
         ArrayList filtered_list = new ArrayList<Restaurant>();
 
-        int j = 0;
+        Pattern pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
+
         for (int i = 0; i < obj.length; i++) {
-            if (obj[i].getCategory().equals(category.toString())) {
-                filtered_list.add(obj[i]);
-                j++;
+            Matcher matcher = pattern.matcher(obj[i].getName());
+            boolean matchFound = matcher.find();
+            if(matchFound) {
+              filtered_list.add(obj[i]);
             }
         }
         return filtered_list;
