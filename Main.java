@@ -1,25 +1,16 @@
 package Assignment;
 
-import jdk.jshell.execution.Util;
-
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 import static java.lang.Double.parseDouble;
 
 public class Main {
-    private static   Restaurant[] obj;
-    public CartItem[] cartObject;
-
-    public Main(CartItem[] cartObject) {
-        super();
-        this.cartObject = cartObject;
-    }
-
-    public CartItem[] getCartObject() {
-        return cartObject;
-    }
-    // public CartItem addItem(CartItem item) { cartObject[cartObject.length] = new
-    // cartObject(item)}
+    private static Restaurant[] obj;
+    public static ArrayList<CartItem> cartObject = new ArrayList<>();
+    public static ArrayList<Discounts> discounts = new ArrayList<>();
+    public static ArrayList<DeliveryDiscount> deliveryDiscounts = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
 
@@ -31,7 +22,18 @@ public class Main {
         System.out.println("Reading Discounts.txt");
         ArrayList file2BufferString = Utils.readFile("Discounts.txt");
 
-      obj = new Restaurant[file1BufferString.size()];
+        String discountRegex = "\\[\\d{1,2},\\d{0,2}\\),\\d{1,2}%";
+        String deliveryDiscountRegex = "\\d,\\d{1,2}%";
+
+        file2BufferString.forEach((item) -> {
+            if (Pattern.matches(discountRegex, item.toString())) {
+                System.out.println(item);
+            } else if (Pattern.matches(deliveryDiscountRegex, item.toString())) {
+                System.out.println("delivery " + item);
+            }
+        });
+
+        obj = new Restaurant[file1BufferString.size()];
 
         String[] str = Utils.getStringArray(file1BufferString);
 
@@ -96,14 +98,15 @@ public class Main {
         switch (input) {
             case 1:
                 System.out.println("Selected Option 1");
-                select_by_category(obj);
+                select_by_category();
                 break;
             case 2:
                 System.out.println("Selected Option 2");
-                search_restaurant_by_name(obj);
+                search_restaurant_by_name();
                 break;
             case 3:
                 System.out.println("Selected Option 3");
+                checkout();
                 break;
             case 4:
                 System.out.println("Thank You");
@@ -115,7 +118,7 @@ public class Main {
         }
     }
 
-    public static void select_by_category(Restaurant[] obj) {
+    public static void select_by_category() {
 
         Set<String> categories = new HashSet<String>();
         for (int i = 0; i < obj.length; i++)
@@ -176,13 +179,13 @@ public class Main {
         }
 
         if (input > 0 && input <= filtered_list.size()) {
-            restaurant_menu(filtered_list.get(input - 1), obj);
+            restaurant_menu(filtered_list.get(input - 1));
         } else {
             first_loading_screen(obj);
         }
     }
 
-    public static void search_restaurant_by_name(Restaurant[] obj) {
+    public static void search_restaurant_by_name() {
         ArrayList<Restaurant> filtered_list = new ArrayList<>();
 
         String message = "------------------------------------------------\n";
@@ -227,14 +230,14 @@ public class Main {
         }
 
         if (input > 0 && input <= list.size()) {
-            restaurant_menu(list.get(input - 1), obj);
+            restaurant_menu(list.get(input - 1));
         } else {
             first_loading_screen(obj);
         }
 
     }
 
-    public static void restaurant_menu(Restaurant restaurant, Restaurant[] obj) {
+    public static void restaurant_menu(Restaurant restaurant) {
         String message = "------------------------------------------------\n";
         message += "> Select a food item from " + restaurant.getName() + "\n";
         message += "------------------------------------------------\n";
@@ -254,10 +257,38 @@ public class Main {
             else if (input == restaurant.getFoodItems().size() + 1) {
                 first_loading_screen(obj);
             } else {
-                System.out.println(
-                        restaurant.getFoodItems().get(restaurant.getFoodItems().keySet().toArray()[input - 1]));
+                String name = (String) restaurant.getFoodItems().keySet().toArray()[input - 1];
+                Double price = Double.parseDouble(restaurant.getFoodItems().get(name).toString());
+                AtomicBoolean added = new AtomicBoolean(false);
+                cartObject.forEach(item -> {
+                    if (item.restaurantName.equals(restaurant.getName()) && item.itemName.equals(name))
+                        ;
+                    {
+                        item.quantity += 1;
+                        added.set(true);
+                    }
+                });
+
+                if (!added.get()) {
+                    CartItem item = new CartItem(restaurant.getName(), name, 1, price);
+                    cartObject.add(item);
+                }
             }
+        }
+    }
+
+    public static void checkout() {
+
+        String message = "------------------------------------------------\n";
+        message += "You have ordered the following items\n";
+        message += "------------------------------------------------\n";
+        HashSet<String> uniqueRestaurant = new HashSet<>();
+        cartObject.forEach(item -> uniqueRestaurant.add(item.restaurantName));
+        System.out.println(uniqueRestaurant);
+        for (String item : uniqueRestaurant) {
+            message += item + "\n";
 
         }
+
     }
 }

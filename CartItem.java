@@ -2,22 +2,25 @@ package Assignment;
 
 public class CartItem
 {
-    public String itemName;
-    public int itemCost;
-    public int quantity;
     public String restaurantName;
+    public String itemName;
+    public double itemCost;
+    public int quantity;
 
 
-    public CartItem(String itemName, int itemCost,
-                            int quantity, String restaurantName)
+
+    public CartItem(String restaurantName, String itemName,
+                            int quantity, Double itemCost)
     {
-        this.itemName = itemName;
-        this.itemCost = itemCost;
-        this.quantity = quantity;
         this.restaurantName = restaurantName;
+        this.itemName = itemName;
+        this.quantity = quantity;
+        this.itemCost = itemCost;
+
+
     }
 
-    public void add(CartItem otherItem)
+    public void addExisting(CartItem otherItem)
     {
         this.quantity = this.quantity + otherItem.quantity;
     }
@@ -27,4 +30,6 @@ public class CartItem
         return itemName+" cost: "+itemCost+" qty: "+quantity+" restaurant: "+
                 restaurantName;
     }
+
+
 }
