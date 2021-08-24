@@ -1,5 +1,6 @@
 package Assignment;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
@@ -8,7 +9,7 @@ import static java.lang.Double.parseDouble;
 
 public class Main {
     private static Restaurant[] obj;
-    public static ArrayList<CartItem> cartObject = new ArrayList<>();
+    public static ArrayList<RestaurantOrder> orderObject = new ArrayList<>();
     public static ArrayList<Discounts> discounts = new ArrayList<>();
     public static ArrayList<DeliveryDiscount> deliveryDiscounts = new ArrayList<>();
 
@@ -259,20 +260,39 @@ public class Main {
             } else {
                 String name = (String) restaurant.getFoodItems().keySet().toArray()[input - 1];
                 Double price = Double.parseDouble(restaurant.getFoodItems().get(name).toString());
-                AtomicBoolean added = new AtomicBoolean(false);
-                cartObject.forEach(item -> {
-                    if (item.restaurantName.equals(restaurant.getName()) && item.itemName.equals(name))
-                        ;
-                    {
-                        item.quantity += 1;
-                        added.set(true);
-                    }
-                });
 
-                if (!added.get()) {
-                    CartItem item = new CartItem(restaurant.getName(), name, 1, price);
-                    cartObject.add(item);
+
+                AtomicBoolean added = new AtomicBoolean(false);
+
+                if(orderObject.size()==0)
+                {
+                    //add object and item
                 }
+                else {
+                    orderObject.forEach(item -> {
+                        if (item.getReference().equals(restaurant));{
+                            // add item
+                        }
+                        else{
+                            //add second restaurant
+                        }
+                    });
+
+                }
+
+//                cartObject.forEach(item -> {
+//                    if (item.restaurantName.equals(restaurant.getName()) && item.itemName.equals(name))
+//
+//                    {
+//                        item.quantity += 1;
+//                        added.set(true);
+//                    }
+//                });
+//
+//                if (!added.get()) {
+//                    CartItem item = new CartItem( name, 1, price);
+//                    cartObject.add(item);
+//                }
             }
         }
     }
@@ -283,6 +303,7 @@ public class Main {
         message += "You have ordered the following items\n";
         message += "------------------------------------------------\n";
         HashSet<String> uniqueRestaurant = new HashSet<>();
+        cartObject.forEach(item->System.out.println(item.restaurantName+" "+item.itemName+" "+item.quantity+" "+item.itemCost));
         cartObject.forEach(item -> uniqueRestaurant.add(item.restaurantName));
         System.out.println(uniqueRestaurant);
         for (String item : uniqueRestaurant) {
