@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 import static java.lang.Double.parseDouble;
 
@@ -261,38 +262,23 @@ public class Main {
                 String name = (String) restaurant.getFoodItems().keySet().toArray()[input - 1];
                 Double price = Double.parseDouble(restaurant.getFoodItems().get(name).toString());
 
-
+                CartItem foodItem = new CartItem(name, 1, price);
                 AtomicBoolean added = new AtomicBoolean(false);
 
-                if(orderObject.size()==0)
-                {
-                    //add object and item
-                }
-                else {
-                    orderObject.forEach(item -> {
-                        if (item.getReference().equals(restaurant));{
-                            // add item
-                        }
-                        else{
-                            //add second restaurant
-                        }
-                    });
+                if (orderObject.size() == 0) {
+                    RestaurantOrder orderItem = new RestaurantOrder(restaurant, foodItem);
+                    orderObject.add(orderItem);
+                } else {
+                    int itemIndex = IntStream.range(0, orderObject.size())
+                            .filter(i -> orderObject.get(i).getReference().equals(restaurant)).findFirst().orElse(-1);
+                    if (itemIndex == -1) {
+                        RestaurantOrder orderItem = new RestaurantOrder(restaurant, foodItem);
+                        orderObject.add(orderItem);
+                    } else
+                        orderObject.get(itemIndex).addItem(foodItem);
 
                 }
 
-//                cartObject.forEach(item -> {
-//                    if (item.restaurantName.equals(restaurant.getName()) && item.itemName.equals(name))
-//
-//                    {
-//                        item.quantity += 1;
-//                        added.set(true);
-//                    }
-//                });
-//
-//                if (!added.get()) {
-//                    CartItem item = new CartItem( name, 1, price);
-//                    cartObject.add(item);
-//                }
             }
         }
     }
@@ -302,14 +288,13 @@ public class Main {
         String message = "------------------------------------------------\n";
         message += "You have ordered the following items\n";
         message += "------------------------------------------------\n";
-        HashSet<String> uniqueRestaurant = new HashSet<>();
-        cartObject.forEach(item->System.out.println(item.restaurantName+" "+item.itemName+" "+item.quantity+" "+item.itemCost));
-        cartObject.forEach(item -> uniqueRestaurant.add(item.restaurantName));
-        System.out.println(uniqueRestaurant);
-        for (String item : uniqueRestaurant) {
-            message += item + "\n";
 
+        StringBuilder sb = new StringBuilder();
+        for (RestaurantOrder item : orderObject) {
+            sb.append(item.getReference().getName()).append("\n");
+            for (CartItem foodItem : item.getItemList()) {
+                sb.append(foodItem.toString()).append("\n");
+            }
         }
-
     }
 }
